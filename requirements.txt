@@ -1,0 +1,7 @@
+patsy
+pandas
+pystan>=2.12.0
+survivalstan
+git+git://github.com/jburos/stancache
+seaborn
+plotly
