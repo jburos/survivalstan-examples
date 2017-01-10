@@ -49,13 +49,23 @@ parameters {
     real<lower=0> baseline_r_sigma;
     real log_baseline_r_mu;
     
+    // terminal-event submodel
+    real alpha;       // weight on subject-frailty
+    vector[M_t] B_t;    // betas for terminal-event
+    real eta0_t;       // weight on longitudinal-model component
+    real eta1_t;
+    vector[T] log_baseline_t_raw; 
+    real<lower=0> baseline_t_sigma;
+    real log_baseline_t_mu;
 }
 transformed parameters {
+    //vector[N_l] biomarker_value;
     vector[T] log_baseline_r;
     vector[T] log_baseline_t;
     vector[N] log_hazard_r;
     vector[N] log_hazard_t;
     
+    //biomarker_value = B0_l + Bt_l*time_l + x_l*B_l + b0[subject_l] + b1[subject_l]*time_l;
     
     log_baseline_r = log_baseline_r_mu + log_baseline_r_raw + log_t_dur;
     log_baseline_t = log_baseline_t_mu + log_baseline_t_raw + log_t_dur;
@@ -64,6 +74,9 @@ transformed parameters {
     log_hazard_t = log_baseline_t[t] + vi[s] + x_t*B_t + eta0_t*b0[s] + eta1_t*to_vector(b1[s]);
 }
 model {
+    // longitudinal submodel priors
+    //biomarker_sigma ~ cauchy(0, 5);
+    
     // recurrent event submodel priors
     log_baseline_r_mu ~ normal(0, 1);
     baseline_r_sigma ~ normal(0, 1);
@@ -75,6 +88,7 @@ model {
     log_baseline_t_raw ~ normal(0, baseline_t_sigma);
     
     // models
+    //y_l ~ normal(biomarker_value, biomarker_sigma);
     event_t ~ poisson_log(log_hazard_t);
     event_r ~ poisson_log(log_hazard_r);
 }
