@@ -59,13 +59,13 @@ parameters {
     real log_baseline_t_mu;
 }
 transformed parameters {
-    //vector[N_l] biomarker_value;
+    vector[N_l] biomarker_value;
     vector[T] log_baseline_r;
     vector[T] log_baseline_t;
     vector[N] log_hazard_r;
     vector[N] log_hazard_t;
     
-    //biomarker_value = B0_l + Bt_l*time_l + x_l*B_l + b0[subject_l] + b1[subject_l]*time_l;
+    biomarker_value = B0_l + Bt_l*time_l + x_l*B_l + b0[subject_l] + b1[subject_l]*time_l;
     
     log_baseline_r = log_baseline_r_mu + log_baseline_r_raw + log_t_dur;
     log_baseline_t = log_baseline_t_mu + log_baseline_t_raw + log_t_dur;
@@ -75,7 +75,7 @@ transformed parameters {
 }
 model {
     // longitudinal submodel priors
-    //biomarker_sigma ~ cauchy(0, 5);
+    biomarker_sigma ~ cauchy(0, 5);
     
     // recurrent event submodel priors
     log_baseline_r_mu ~ normal(0, 1);
@@ -88,7 +88,7 @@ model {
     log_baseline_t_raw ~ normal(0, baseline_t_sigma);
     
     // models
-    //y_l ~ normal(biomarker_value, biomarker_sigma);
+    y_l ~ normal(biomarker_value, biomarker_sigma);
     event_t ~ poisson_log(log_hazard_t);
     event_r ~ poisson_log(log_hazard_r);
 }

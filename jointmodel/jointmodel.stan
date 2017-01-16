@@ -1,5 +1,4 @@
 data {
-    
     // global dimensions
     int<lower=1> S; // number of subjects
     int<lower=1> T; // number of timepoints
@@ -18,27 +17,14 @@ data {
     int<lower=0, upper=1> event_r[N]; // indicator for recurrent event
     matrix[N, M_t] x_t;
     matrix[N, M_r] x_r;
-    
-    // data for longitudinal biomarker submodel (times are observation times)
-    int N_l;
-    int M_l;
-    int<lower=1, upper=S> subject_l[N_l];
-    vector<lower=0>[N_l] time_l;
-    real y_l[N_l];
-    matrix[N_l, M_l] x_l;
 }
 transformed data {
     vector[T] log_t_dur;  // log-duration for each timepoint
     log_t_dur = log(t_obs);
 }
 parameters {
-    // longitudinal submodel 
-    vector[M_l] B_l; // means for betas
-    real Bt_l;     // mean for beta(time)
-    real B0_l;
     vector[S] b0; // random effects b0 and b1
     matrix[S, 1] b1;
-    real<lower=0> biomarker_sigma;
     
     // recurrent-event submodel
     vector[S] vi;     // subject-level frailty
@@ -48,7 +34,16 @@ parameters {
     vector[T] log_baseline_r_raw; 
     real<lower=0> baseline_r_sigma;
     real log_baseline_r_mu;
-    
+
+    // terminal-event submodel
+    real alpha;       // weight on subject-frailty
+    vector[M_t] B_t;    // betas for terminal-event
+    real eta0_t;       // weight on longitudinal-model component
+    real eta1_t;
+    vector[T] log_baseline_t_raw; 
+    real<lower=0> baseline_t_sigma;
+    real log_baseline_t_mu;
+
 }
 transformed parameters {
     vector[T] log_baseline_r;
