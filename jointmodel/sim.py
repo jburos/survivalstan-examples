@@ -39,9 +39,9 @@ def simulate_inputs(N,
 
     ## simulate covariate values
     X = np.matrix(np.random.binomial(size=(N, 2), p=p, n=1))
-    X_l = X[:,0:1] # covariate X for longitudinal submodel
-    X_r = X[:,0:1] # covariate X for recurrent events submodel
-    X_t = X[:,1:2] # covariate X for terminal event submodel
+    X_l = X[:,0:1] # covariate X1 for longitudinal submodel
+    X_r = X[:,0:1] # covariate X1 for recurrent events submodel
+    X_t = X[:,1:2] # covariate X2 for terminal event submodel
     
     params = {
         'X': X,
