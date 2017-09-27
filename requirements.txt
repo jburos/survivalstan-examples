@@ -2,7 +2,7 @@ patsy
 pandas
 pystan>=2.12.0
 Cython
-git+git://github.com/hammerlab/survivalstan@develop
+git+git://github.com/hammerlab/survivalstan
 git+git://github.com/jburos/stancache
 seaborn
 plotly
